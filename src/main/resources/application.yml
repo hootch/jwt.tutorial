@@ -1,0 +1,35 @@
+spring:
+    
+    h2:
+        console:
+            enabled: true
+    
+    datasource:
+        url: jdbc:h2:mem:testdb
+        driver-class-name: org.h2.Driver
+        username: sa
+        password: 
+
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        hibernate:
+            ddl-auto: create-drop
+        properties:
+            hibernate:
+                format_sql: true        #쿼리가 한줄이아니라 이쁘게나옴
+                show_sql: true          #jpa 쿼리를 콘솔에 다찍음
+                # use_sql_comments: true # JPQL실행문까지 보여줌..근데 더럽게 보임^-^
+        defer-datasource-initialization: true
+
+jwt:
+    header: Authorization
+    #HS512 알고리즘을 사용할 것이기 때문에 512bit, 즉 64byte 이상의 secret key를 사용해야 한다.
+    #echo 'silvernine-tech-spring-boot-jwt-tutorial-secret-silvernine-tech-spring-boot-jwt-tutorial-secret'|base64
+    secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+    token-validity-in-seconds: 86400    #토큰 유효기간
+
+logging:
+    level:
+        com.hootch: DEBUG
+        #org.hibernate.SQL: debug #얘는 쿼리를 전부 로그파일로 남김
+        #org.hibernate.type: tracer   #얘는 파라미터까지 보여줌! 
