@@ -1,5 +1,7 @@
 spring:
-    
+    thymeleaf:
+        prefix: classpath:templates/
+        suffix: .html
     h2:
         console:
             enabled: true
@@ -32,4 +34,4 @@ logging:
     level:
         com.hootch: DEBUG
         #org.hibernate.SQL: debug #얘는 쿼리를 전부 로그파일로 남김
-        #org.hibernate.type: tracer   #얘는 파라미터까지 보여줌! 
+        #org.hibernate.type: tracer   #얘는 파라미터까지 보여줌!

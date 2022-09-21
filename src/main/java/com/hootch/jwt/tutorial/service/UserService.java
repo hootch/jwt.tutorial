@@ -1,7 +1,5 @@
 package com.hootch.jwt.tutorial.service;
 
-import java.util.Collections;
-import java.util.Optional;
 import com.hootch.jwt.tutorial.dto.UserDto;
 import com.hootch.jwt.tutorial.entity.Authority;
 import com.hootch.jwt.tutorial.entity.User;
@@ -12,6 +10,8 @@ import com.hootch.jwt.tutorial.util.SecurityUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
 
 @Service
 public class UserService {
@@ -24,15 +24,15 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto signup(UserDto userDto) {
+    public UserDto signup(UserDto userDto) {    //회원 가입을 수행하는 메소드
         if (userRepository.findOneWithAuthoritiesByUsername(userDto.getUsername()).orElse(null) != null) {
             throw new DuplicateMemberException("이미 가입되어 있는 유저입니다.");
         }
+        //userDto에서 username을 꺼내서 findOneWithAuthoritiesByUsername메소드를 통해 DB에 존재 여부를 확인 하고 존재하지 않으면
 
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
                 .build();
-
         User user = User.builder()
                 .username(userDto.getUsername())
                 .password(passwordEncoder.encode(userDto.getPassword()))
@@ -42,6 +42,7 @@ public class UserService {
                 .build();
 
         return UserDto.from(userRepository.save(user));
+        //Authroity와 User정보를 생성해서 DB에 저장함
     }
 
     @Transactional(readOnly = true)

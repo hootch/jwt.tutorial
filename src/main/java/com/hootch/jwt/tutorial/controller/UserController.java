@@ -1,7 +1,6 @@
 package com.hootch.jwt.tutorial.controller;
 
 import com.hootch.jwt.tutorial.dto.UserDto;
-import com.hootch.jwt.tutorial.entity.User;
 import com.hootch.jwt.tutorial.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
