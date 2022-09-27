@@ -28,10 +28,11 @@ jwt:
     #HS512 알고리즘을 사용할 것이기 때문에 512bit, 즉 64byte 이상의 secret key를 사용해야 한다.
     #echo 'silvernine-tech-spring-boot-jwt-tutorial-secret-silvernine-tech-spring-boot-jwt-tutorial-secret'|base64
     secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
-    token-validity-in-seconds: 86400    #토큰 유효기간
+    refreshSecret: cmVmcmVzaFRva2VucmVmcmVzaFRva2VucmVmcmVzaFRva2VucmVmcmVzaFRva2VucmVmcmVzaFRva2VucmVmcmVzaFRva2VucmVmcmVzaFRva2VucmVmcmVzaFRva2VucmVmcmVzaFRva2VucmVmcmVzaFRva2VuCg==
+    token-validity-in-seconds: 15    #토큰 유효기간
 
 logging:
     level:
-        com.hootch: DEBUG
-        #org.hibernate.SQL: debug #얘는 쿼리를 전부 로그파일로 남김
-        #org.hibernate.type: tracer   #얘는 파라미터까지 보여줌!
+#        com.hootch: DEBUG
+        org.hibernate.SQL: debug #얘는 쿼리를 전부 로그파일로 남김
+        org.hibernate.type: trace   #얘는 파라미터까지 보여줌!

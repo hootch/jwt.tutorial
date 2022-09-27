@@ -18,6 +18,7 @@ public class JwtFilter extends GenericFilterBean {
 
    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
    public static final String AUTHORIZATION_HEADER = "Authorization";
+   public static final String AUTHORIZATION_REFRESH = "Refresh";
    private TokenProvider tokenProvider;
 
    public JwtFilter(TokenProvider tokenProvider) {
@@ -29,7 +30,6 @@ public class JwtFilter extends GenericFilterBean {
       HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
       String jwt = resolveToken(httpServletRequest);                                 //리퀘스트에서 토큰을 받아서
       String requestURI = httpServletRequest.getRequestURI();
-
       if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {              //토큰 유효성 검증을 돌리고
          Authentication authentication = tokenProvider.getAuthentication(jwt);         //토큰이 정상적이라면 토큰에서 Authentication객체를 받아와서 
          SecurityContextHolder.getContext().setAuthentication(authentication);         //security 컨텍스트에 set해줌

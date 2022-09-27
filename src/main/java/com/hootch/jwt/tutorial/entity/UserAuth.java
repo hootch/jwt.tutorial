@@ -5,19 +5,21 @@ import lombok.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "authority")
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Authority {
+public class UserAuth {
 
-   @Id
-   @Column(name = "authority_name", length = 50)
-   private String authorityName;
+	@Id
+	@Column(name = "id")
+	private String userid;
+
+	private String auth1;
+
+	private String auth2;
+
 }

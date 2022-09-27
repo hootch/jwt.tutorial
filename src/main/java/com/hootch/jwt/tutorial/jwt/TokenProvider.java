@@ -26,39 +26,51 @@ public class TokenProvider implements InitializingBean {
     private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
     private static final String AUTHORITIES_KEY = "auth";
     private final String secret;
+
+    private final String refreshSecret;
     private final long tokenValidityInMilliseconds;
+
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000* 60 * 60 * 24 * 7;//7일
     private Key key;
+    private Key refreshKey;
     private String str;
     
     
     public TokenProvider(  
-        @Value("${jwt.secret}") String secret,                                      //yml 파일의 jwt 설정란에 있는 secret 정보를 가져와서 저장함 
-        @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {   //y-: 1. yml 파일의 token-validty-in-second 정보를 가져와서 저장함 
+        @Value("${jwt.secret}") String secret,  //yml 파일의 jwt 설정란에 있는 secret 정보를 가져와서 저장함
+        @Value("${jwt.refreshSecret}") String refreshSecret,
+        @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {   //y-: 1. yml 파일의 token-validty-in-second 정보를 가져와서 저장함
         this.secret = secret;
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
+        this.refreshSecret = refreshSecret;
     }
 
     @Override                       //얘를 오버라이드 한 이유는 Bean 생성 후 의존성 주입을 받은 후 secret값을 Base64 Decode해서 key변수에 할당하기 위함
     public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        keyBytes = Decoders.BASE64.decode(refreshSecret);
+        this.refreshKey = Keys.hmacShaKeyFor(keyBytes);
+
     }
 
 
-    public String createToken(Authentication authentication) {  //Authentication객체의 권한정보를 이용해서 토큰을 생성하는 메서드
+    public String createToken(Authentication authentication,String type) {  //Authentication객체의 권한정보를 이용해서 토큰을 생성하는 메서드
         String authorities = authentication.getAuthorities().stream()
                                             .map(GrantedAuthority::getAuthority)
                                             .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);   //y-: 현시간(now)에 위에서 설정한지금 시간에 위에서 설정한 토큰 생존시간을 더해서 시간을 지정한 후
-        
+        Key thisKey = type.equals("access") ? key : refreshKey;
+
+
         return Jwts.builder()
-                    .setSubject(authentication.getName()) 
-                    .claim(AUTHORITIES_KEY, authorities)        
-                    .signWith(key, SignatureAlgorithm.HS512)
+                .setSubject(authentication.getName())
+                    .claim(AUTHORITIES_KEY, authorities)
+                    .signWith(thisKey, SignatureAlgorithm.HS512)
                     .setExpiration(validity)                                //setExpiration을 통해 토큰의 만료시간을 정함.
-                    .compact(); 
+                    .compact();
     }
 
 
@@ -83,8 +95,15 @@ public class TokenProvider implements InitializingBean {
     
 
     public boolean validateToken(String token) {                                            //토큰을 파라미터로 받아서
+        Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);//파싱을 한 후
+        System.out.println(claimsJws);
+        System.out.println(claimsJws);
+        System.out.println(claimsJws);
+        System.out.println(claimsJws);
+        System.out.println(claimsJws);
+
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);          //파싱을 한 후
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);//파싱을 한 후
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {    //캐치해서 문제가 있으면 false 아니면 true ^-^
             logger.info("잘못된 JWT 서명입니다.");
