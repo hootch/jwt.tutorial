@@ -30,9 +30,6 @@ public class CustomUserDetailsService implements UserDetailsService {
       return userRepository.findOneWithAuthoritiesByUserid(username)  //로그인 시 db에서 유저정보와 권한정보를 가져와서
          .map(user -> createUser(username, user, auths))                       //그 정보를 기반으로  userdetails.User 객체를 생성함
          .orElseThrow(() -> new UsernameNotFoundException(username    + " -> 데이터베이스에서 찾을 수 없습니다."));
-//      return userRepository.findOneWithAuthoritiesByUserid(username)  //로그인 시 db에서 유저정보와 권한정보를 가져와서
-//         .map(user -> createUser(username, user))                       //그 정보를 기반으로  userdetails.User 객체를 생성함
-//         .orElseThrow(() -> new UsernameNotFoundException(username    + " -> 데이터베이스에서 찾을 수 없습니다."));
    }
 
    private org.springframework.security.core.userdetails.User createUser(String username, User user, UserAuth userAuth) {
@@ -40,15 +37,9 @@ public class CustomUserDetailsService implements UserDetailsService {
          throw new RuntimeException(username + " -> 활성화되어 있지 않습니다.");
       }
 
-//      List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
-//              .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
-//              .collect(Collectors.toList());
       List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
       grantedAuthorities.add( new SimpleGrantedAuthority(userAuth.getAuth1()));
       grantedAuthorities.add( new SimpleGrantedAuthority(userAuth.getAuth2()));
-//      List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
-//              .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
-//              .collect(Collectors.toList());
 
       return new org.springframework.security.core.userdetails.User(user.getUserid(),
               user.getPassword(),
